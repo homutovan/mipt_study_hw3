@@ -9,18 +9,10 @@
 * Python >= 3.10
 * Docker-compose >= 1.29.2
 
-## Установка
+## Установка и запуск
 * docker-compose up 
-* pip install pipenv
-* pipenv install `(пакеты для запуска)`
-* pipenv install --dev `(пакеты для разработки)`
 
-## Запуск
-* pipenv shell
-* python main.py
-
-## Проверка оформления кода
-* flake8
-
-## Диаграмма базы данных
-![Диаграмма базы данных](docs/db.png)
+## Веб-интерфейс
+* http://127.0.0.1:18080/
+## Диаграмма gfqgkfqyf
+![Диаграмма базы данных](docs/dag_schema.png)
