@@ -16,10 +16,11 @@ with DAG(
     from app.db.controller import Controller
     from app.settings import VERBOSE
     
-    @task()
+    @task(task_id='drop_db')
     def drop_db():
         
         controller = Controller(engine, verbose=VERBOSE)
         return controller.destroy_db()
     
     drop_db()
+    

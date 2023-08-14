@@ -76,7 +76,7 @@ with DAG(
         controller = Controller(engine, verbose=VERBOSE)
         
         for item in CustomReader.read_zip(EGRUL_ZIP_FILE):
-            controller.add_company([item], commit=False)
+            controller.add_company_dir([item], commit=False)
         
     @task(task_id='load_hh_vacancy')
     def load_hh_vacancy():

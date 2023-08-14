@@ -114,9 +114,9 @@ class Controller(Driver):
             lambda x: TypeOfBusiness(**x), data)), commit=commit,
             )
 
-    def add_company(self,
+    def add_company_dir(self,
                     data: List[Dict[str, str]],
                     commit=True) -> bool:
         return self.add_data(list(map(
-            lambda x: Company(**x), data)), commit=commit,
+            lambda x: CompanyDirectory(**x), data)), commit=commit,
             )

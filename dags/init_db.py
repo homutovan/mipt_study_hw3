@@ -16,10 +16,11 @@ with DAG(
     from app.db.controller import Controller
     from app.settings import VERBOSE
     
-    @task()
+    @task(task_id='init_db')
     def init_db():
         
         controller = Controller(engine, verbose=VERBOSE)
         return controller.create_db()
     
     init_db()
+    
