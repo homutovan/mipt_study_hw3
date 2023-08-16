@@ -1,12 +1,15 @@
+from collections import Counter
+from logging import getLogger
 from typing import Dict, List
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.engine import base
 
-from app.db.models import Base, Company, CompanyDirectory, Skill, TypeOfBusiness, Vacancy
+from app.db.models import Base, Company, CompanyDirectory, Skill, TopSkill, TypeOfBusiness, Vacancy
 from app.settings import THRESHOLD
+from app.utils import normalize
 # from utils import get_logger
 
 
@@ -18,7 +21,7 @@ class Driver:
         self.engine = engine
         self.session_factory = sessionmaker(self.engine, expire_on_commit=True)
         self._data_list = []
-        # self.logger = get_logger(__name__)
+        self.logger = getLogger(__name__)
 
     def create_db(self) -> None:
         return self.db_execute(
@@ -56,7 +59,7 @@ class Driver:
 
             return True
         except SQLAlchemyError as e:
-            # self.logger.error(e)
+            self.logger.error(e)
             return False
 
     def commit(self) -> bool:
@@ -120,3 +123,22 @@ class Controller(Driver):
         return self.add_data(list(map(
             lambda x: CompanyDirectory(**x), data)), commit=commit,
             )
+        
+    def calculate_top_skills(self):
+        skill_counter = Counter()
+        
+        with self.session_factory() as session:
+            
+            telecom_company_list = list(map(lambda x: normalize(x[0]), session.execute(select(CompanyDirectory.name))))
+            
+            for vacancy in session.execute(select(Vacancy)):
+                if vacancy[0].company_name.lower() in telecom_company_list:
+                    for skill in vacancy[0].key_skills:
+                        skill_counter[skill.name] += 1
+                    
+            session.add_all([
+                TopSkill(name=skill_name, count=skill_count) 
+                for skill_name, skill_count in skill_counter.most_common(10)
+                ])
+        
+        session.commit()

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from sqlalchemy import BigInteger, Column, ForeignKey, String, Table
+from sqlalchemy import BigInteger, Column, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -34,7 +34,8 @@ vacancy_skills = Table(
     Column('vacancy_id', ForeignKey('vacancy._id'), primary_key=True),
     Column('skill_id', ForeignKey('skill._id'), primary_key=True),
 )
-
+    
+    
 class Vacancy(Base):
     __tablename__ = 'vacancy'
 
@@ -59,6 +60,15 @@ class Skill(Base):
         secondary=vacancy_skills,
         back_populates='key_skills',
         )
+    
+    
+class TopSkill(Base):
+    __tablename__ = 'top_skill'
+    
+    _id = Column(BigInteger, autoincrement=True, primary_key=True)
+    name = Column(String(1024), nullable=False)
+    count = Column(Integer, nullable=False)
+    skill_id = Column('skill_id', ForeignKey('skill._id'))
 
 
 class Company(Base):

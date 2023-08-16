@@ -94,8 +94,13 @@ with DAG(
         
     @task(task_id='calculate_skills')
     def calculate_skills():
-        pass
-    
+        from airflow.settings import engine
+        from app.db.controller import Controller
+        from app.settings import VERBOSE
+        
+        controller = Controller(engine, verbose=VERBOSE)
+        controller.calculate_top_skills()
+        
     
     chain(
         init_db(), 
